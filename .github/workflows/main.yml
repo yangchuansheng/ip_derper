@@ -20,5 +20,5 @@ jobs:
 
       - name: modify
         run: |
-          sed -i '/hi.ServerName != m.hostname/,+2d' cmd/derper/cert.go
+          # sed -i '/hi.ServerName != m.hostname/,+2d' cmd/derper/cert.go
           ls -lh
