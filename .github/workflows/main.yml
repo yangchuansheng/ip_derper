@@ -1,0 +1,42 @@
+name: Disable Checking ServerName
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [ main ]
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: modify
+        run: |
+          cd ..
+          git clone -b main https://github.com/yangchuansheng/ip_derper ip_derper_origin --depth 1
+          cd ip_derper_origin
+          rm -rf .git*
+          sed -i '/hi.ServerName != m.hostname/,+2d' cmd/derper/cert.go
+          cd ../tailscale
+          cp -rf ../ip_derper_origin/* .
+          
+      #- name: Deploy
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    publish_dir: ./
+      #    publish_branch: ip_derper
+      - uses: eunchurn/action-publish@v1.1.1
+        env:    
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: 'ip_derper' #optional defaults to master
+          USER_NAME: 'yangchuansheng' #optional defaults to "Automated publisher"
+          USER_EMAIL: 'yangchuansheng33@gmail.com' #optional defaults to "actions@users.noreply.github.com"
