@@ -8,7 +8,7 @@ ADD tailscale /app/tailscale
 
 # build modified derper
 RUN cd /app/tailscale/cmd/derper && \
-    /usr/local/go/bin/go build -buildvcs=false -ldflags "-s -w" -o /app/derper && \
+    CGO_ENABLED=0 /usr/local/go/bin/go build -buildvcs=false -ldflags "-s -w" -o /app/derper && \
     cd /app && \
     rm -rf /app/tailscale
 
